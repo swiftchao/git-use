@@ -32,28 +32,12 @@ RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
 Are you sure you want to continue connecting (yes/no)?看到这个内容放入时候，说明就成功了。
 Hi username! 
 You've successfully authenticated, but GitHub does not provide shell access.
-四、上传本地项目到github
-mkdir demo
-cd demo
-echo "# demo" >> README.md
-git init //把这个目录变成Git可以管理的仓库
-git add README.md //文件添加到仓库
-git add . //不但可以跟单一文件，还可以跟通配符，更可以跟目录。一个点就把当前目录下所有未追踪的文件全部add了（空目录不会被添加）
-git status //查看当前工作区的状态（需提交的变更）
-git commit -m "first commit" //把文件提交到仓库
-git remote add origin git@github.com:swiftchao/demo.git //关联远程仓库
-git push -u origin master //将本地主分支推到远程(如无远程主分支则创建，用于初始化远程仓库)
-git push origin master //将本地主分支推到远程主分支    
-下载操作：
-git pull origin master //把远程库更改拉到本地仓库
-git clone git@github.com:swiftchao/demo.git //克隆远程仓库到本地
-git clone https://github.com/swiftchao/demo.git //克隆远程仓库到本地
-git clone https://github.com/swiftchao/demo //克隆远程仓库到本地
 
-生成key	
+****************生成key	
 ssh-keygen -t rsa -C "chaofeibest@163.com" 
 cat ~/.ssh/id_rsa.pub
 添加key到github上
+**********git 配置
 一、创建github repository(仓库)
 
 仓库地址使用SSH，如果用https地址每次push/pull都要输入github账号密码。二、安装客户端
@@ -71,3 +55,521 @@ git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Crese
 
 git clone git@gitee.com:chaofeibest/gittee-demo.git
 git clone git@github.com:swiftchao/git-use.git
+
+***************上传本地项目到github
+mkdir demo
+cd demo
+echo "# demo" >> README.md
+git init //把这个目录变成Git可以管理的仓库
+git add README.md //文件添加到仓库
+git add . //不但可以跟单一文件，还可以跟通配符，更可以跟目录。一个点就把当前目录下所有未追踪的文件全部add了（空目录不会被添加）
+git status //查看当前工作区的状态（需提交的变更）
+git commit -m "first commit" //把文件提交到仓库
+git remote add origin git@github.com:swiftchao/demo.git //关联远程仓库
+git push -u origin master //将本地主分支推到远程(如无远程主分支则创建，用于初始化远程仓库)
+git push origin master //将本地主分支推到远程主分支    
+*********git下载
+git pull origin master //把远程库更改拉到本地仓库
+git clone git@github.com:swiftchao/demo.git //克隆远程仓库到本地
+git clone https://github.com/swiftchao/demo.git //克隆远程仓库到本地
+git clone https://github.com/swiftchao/demo //克隆远程仓库到本地
+
+
+**********git回退
+首先，Git必须知道当前版本是哪个版本，在Git中，用HEAD表示当前版本，也就是最新的提交1094adb...（注意我的提交ID和你的肯定不一样），上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。
+
+现在，我们要把当前版本append GPL回退到上一个版本add distributed，就可以使用git
+reset命令：
+
+$ git reset --hard HEAD^
+HEAD is now at e475afc add distributed
+
+HEAD指向的版本就是当前版本，因此，Git允许我们在版本的历史之间穿梭，使用命令git
+reset --hard commit_id。
+
+穿梭前，用git log可以查看提交历史，以便确定要回退到哪个版本。
+
+要重返未来，用git reflog查看命令历史，以便确定要回到未来的哪个版本。
+
+
+********git比较区别
+用git diff HEAD -- readme.txt命令可以查看工作区和版本库里面最新版本的区别：
+
+$ git diff HEAD -- readme.txt 
+diff --git a/readme.txt b/readme.txt
+index 76d770f..a9c5755 100644
+--- a/readme.txt
++++ b/readme.txt
+@@ -1,4 +1,4 @@
+Git is a distributed version control system.
+Git is free software distributed under the GPL.
+Git has a mutable index called stage.
+-Git tracks changes.
++Git tracks changes of files.
+
+**********git丢弃修改
+你可以发现，Git会告诉你，git checkout -- file可以丢弃工作区的修改：
+
+$ git checkout -- readme.txt
+命令git checkout --
+readme.txt意思就是，把readme.txt文件在工作区的修改全部撤销，这里有两种情况：
+
+一种是readme.txt自修改后还没有被放到暂存区，现在，撤销修改就回到和版本库一模一样的状态；
+
+一种是readme.txt已经添加到暂存区后，又作了修改，现在，撤销修改就回到添加到暂存区后的状态。
+
+总之，就是让这个文件回到最近一次git commit或git add时的状态。
+
+Git同样告诉我们，用命令git reset HEAD
+<file>可以把暂存区的修改撤销掉（unstage），重新放回工作区：
+
+$ git reset HEAD readme.txt
+Unstaged changes after reset:
+M    readme.txt
+
+*********git删除
+git rm test.txt
+rm 'test.txt'
+ 
+$ git commit -m "remove test.txt"
+[master d46f35e] remove test.txt
+1 file changed, 1 deletion(-)
+delete mode 100644 test.txt""''
+另一种情况是删错了，因为版本库里还有呢，所以可以很轻松地把误删的文件恢复到最新版本：
+$ git checkout -- test.txt
+
+*************git stash
+并不是你不想提交，而是工作只进行到一半，还没法提交，预计完成还需1天时间。但是，必须在两个小时内修复该bug，怎么办？
+
+幸好，Git还提供了一个stash功能，可以把当前工作现场“储藏”起来，等以后恢复现场后继续工作：
+
+$ git stash
+Saved working directory and index state WIP on dev: f52c633 add merge
+现在，用git
+status查看工作区，就是干净的（除非有没有被Git管理的文件），因此可以放心地创建分支来修复bug。
+
+首先确定要在哪个分支上修复bug，假定需要在master分支上修复，就从master创建临时分支：
+
+$ git checkout master
+Switched to branch 'master'
+Your branch is ahead of 'origin/master' by 6 commits.
+(use "git push" to publish your local commits)
+
+$ git checkout -b issue-101
+Switched to a new branch 'issue-101'
+现在修复bug，需要把“Git is free software ...”改为“Git is a free software
+...”，然后提交：
+
+$ git add readme.txt 
+$ git commit -m "fix bug 101"
+[issue-101 4c805e2] fix bug 101
+1 file changed, 1 insertion(+), 1 deletion(-)
+修复完成后，切换到master分支，并完成合并，最后删除issue-101分支：
+
+$ git checkout master
+Switched to branch 'master'
+Your branch is ahead of 'origin/master' by 6 commits.
+(use "git push" to publish your local commits)
+
+$ git merge --no-ff -m "merged bug fix 101" issue-101
+Merge made by the 'recursive' strategy.
+	readme.txt | 2 +-
+1 file changed, 1 insertion(+), 1 deletion(-)
+太棒了，原计划两个小时的bug修复只花了5分钟！现在，是时候接着回到dev分支干活了！
+
+$ git checkout dev
+Switched to branch 'dev'
+
+$ git status
+On branch dev
+nothing to commit, working tree clean
+工作区是干净的，刚才的工作现场存到哪去了？用git stash list命令看看：
+
+$ git stash list
+stash@{0}: WIP on dev: f52c633 add merge
+工作现场还在，Git把stash内容存在某个地方了，但是需要恢复一下，有两个办法：
+
+一是用git stash apply恢复，但是恢复后，stash内容并不删除，你需要用git
+stash drop来删除；
+
+另一种方式是用git stash pop，恢复的同时把stash内容也删了：
+
+$ git stash pop
+On branch dev
+Changes to be committed:
+(use "git reset HEAD <file>..." to unstage)
+
+new file:   hello.py
+
+Changes not staged for commit:
+(use "git add <file>..." to update what will be committed)
+(use "git checkout -- <file>..." to discard changes in working directory)
+
+modified:   readme.txt
+
+Dropped refs/stash@{0} (5d677e2ee266f39ea296182fb2354265b91b3b2a)
+再用git stash list查看，就看不到任何stash内容了：
+
+$ git stash list
+你可以多次stash，恢复的时候，先用git stash
+list查看，然后恢复指定的stash，用命令：
+
+$ git stash apply stash@{0}
+
+************git分支
+Feature分支
+阅读: 294839
+软件开发中，总有无穷无尽的新的功能要不断添加进来。
+
+添加一个新功能时，你肯定不希望因为一些实验性质的代码，把主分支搞乱了，所以，每添加一个新功能，最好新建一个feature分支，在上面开发，完成后，合并，最后，删除该feature分支。
+
+现在，你终于接到了一个新任务：开发代号为Vulcan的新功能，该功能计划用于下一代星际飞船。
+
+于是准备开发：
+
+$ git checkout -b feature-vulcan
+Switched to a new branch 'feature-vulcan'
+5分钟后，开发完毕：
+
+$ git add vulcan.py
+
+$ git status
+On branch feature-vulcan
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+	
+	    new file:   vulcan.py
+			
+$ git commit -m "add feature vulcan"
+	[feature-vulcan 287773e] add feature vulcan
+1 file changed, 2 insertions(+)
+	create mode 100644 vulcan.py
+	切回dev，准备合并：
+
+$ git checkout dev
+一切顺利的话，feature分支和bug分支是类似的，合并，然后删除。
+
+但是！
+
+就在此时，接到上级命令，因经费不足，新功能必须取消！
+
+虽然白干了，但是这个包含机密资料的分支还是必须就地销毁：
+
+$ git branch -d feature-vulcan
+error: The branch 'feature-vulcan' is not fully merged.
+If you are sure you want to delete it, run 'git branch -D
+feature-vulcan'.
+销毁失败。Git友情提醒，feature-vulcan分支还没有被合并，如果删除，将丢失掉修改，如果要强行删除，需要使用大写的-D参数。。
+
+现在我们强行删除：
+
+$ git branch -D feature-vulcan
+Deleted branch feature-vulcan (was 287773e).
+终于删除成功！
+
+***************git多人协作
+多人协作
+阅读: 499207
+当你从远程仓库克隆时，实际上Git自动把本地的master分支和远程的master分支对应起来了，并且，远程仓库的默认名称是origin。
+
+要查看远程库的信息，用git remote：
+
+$ git remote
+origin
+或者，用git remote -v显示更详细的信息：
+
+$ git remote -v
+origin  git@github.com:michaelliao/learngit.git (fetch)
+origin  git@github.com:michaelliao/learngit.git (push)
+上面显示了可以抓取和推送的origin的地址。如果没有推送权限，就看不到push的地址。
+
+推送分支
+推送分支，就是把该分支上的所有本地提交推送到远程库。推送时，要指定本地分支，这样，Git就会把该分支推送到远程库对应的远程分支上：
+
+$ git push origin master
+如果要推送其他分支，比如dev，就改成：
+
+$ git push origin dev
+但是，并不是一定要把本地分支往远程推送，那么，哪些分支需要推送，哪些不需要呢？
+
+master分支是主分支，因此要时刻与远程同步；
+
+dev分支是开发分支，团队所有成员都需要在上面工作，所以也需要与远程同步；
+
+bug分支只用于在本地修复bug，就没必要推到远程了，除非老板要看看你每周到底修复了几个bug；
+
+feature分支是否推到远程，取决于你是否和你的小伙伴合作在上面开发。
+
+总之，就是在Git中，分支完全可以在本地自己藏着玩，是否推送，视你的心情而定！
+
+抓取分支
+多人协作时，大家都会往master和dev分支上推送各自的修改。
+
+现在，模拟一个你的小伙伴，可以在另一台电脑（注意要把SSH
+Key添加到GitHub）或者同一台电脑的另一个目录下克隆：
+
+$ git clone git@github.com:michaelliao/learngit.git
+Cloning into 'learngit'...
+remote: Counting objects: 40, done.
+remote: Compressing objects: 100% (21/21), done.
+remote: Total 40 (delta 14), reused 40 (delta 14), pack-reused 0
+Receiving objects: 100% (40/40), done.
+Resolving deltas: 100% (14/14), done.
+当你的小伙伴从远程库clone时，默认情况下，你的小伙伴只能看到本地的master分支。不信可以用git
+branch命令看看：
+
+$ git branch
+* master
+现在，你的小伙伴要在dev分支上开发，就必须创建远程origin的dev分支到本地，于是他用这个命令创建本地dev分支：
+
+$ git checkout -b dev origin/dev
+现在，他就可以在dev上继续修改，然后，时不时地把dev分支push到远程：
+
+$ git add env.txt
+
+$ git commit -m "add env"
+[dev 7a5e5dd] add env
+ 1 file changed, 1 insertion(+)
+  create mode 100644 env.txt
+	
+	$ git push origin dev
+	Counting objects: 3, done.
+	Delta compression using up to 4 threads.
+	Compressing objects: 100% (2/2), done.
+	Writing objects: 100% (3/3), 308 bytes | 308.00 KiB/s, done.
+	Total 3 (delta 0), reused 0 (delta 0)
+	To github.com:michaelliao/learngit.git
+	   f52c633..7a5e5dd  dev -> dev
+		 你的小伙伴已经向origin/dev分支推送了他的提交，而碰巧你也对同样的文件作了修改，并试图推送：
+			
+$ cat env.txt
+env
+
+$ git add env.txt
+			
+$ git commit -m "add new env"
+	[dev 7bd91f1] add new env
+1 file changed, 1 insertion(+)
+	create mode 100644 env.txt
+
+$ git push origin dev
+	To github.com:michaelliao/learngit.git
+! [rejected]        dev -> dev (non-fast-forward)
+	error: failed to push some refs to
+	'git@github.com:michaelliao/learngit.git'
+	hint: Updates were rejected because the tip of your current branch is
+	behind
+	hint: its remote counterpart. Integrate the remote changes (e.g.
+			hint: 'git pull ...') before pushing again.
+	hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+	推送失败，因为你的小伙伴的最新提交和你试图推送的提交有冲突，解决办法也很简单，Git已经提示我们，先用git
+	pull把最新的提交从origin/dev抓下来，然后，在本地合并，解决冲突，再推送：
+
+$ git pull
+	There is no tracking information for the current branch.
+	Please specify which branch you want to merge with.
+	See git-pull(1) for details.
+
+	git pull <remote> <branch>
+
+	If you wish to set tracking information for this branch you can
+	do so with:
+
+	git branch --set-upstream-to=origin/<branch> dev
+	git
+	pull也失败了，原因是没有指定本地dev分支与远程origin/dev分支的链接，根据提示，设置dev和origin/dev的链接：
+
+$ git branch --set-upstream-to=origin/dev dev
+	Branch 'dev' set up to track remote branch 'dev' from 'origin'.
+	再pull：
+
+$ git pull
+	Auto-merging env.txt
+	CONFLICT (add/add): Merge conflict in env.txt
+											Automatic merge failed; fix conflicts and then commit the
+											result.
+											这回git
+											pull成功，但是合并有冲突，需要手动解决，解决的方法和分支管理中的解决冲突完全一样。解决后，提交，再push：
+
+$ git commit -m "fix env conflict"
+[dev 57c53ab] fix env conflict
+
+$ git push origin dev
+Counting objects: 6, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (6/6), 621 bytes | 621.00 KiB/s,
+	done.
+Total 6 (delta 0), reused 0 (delta 0)
+	To github.com:michaelliao/learngit.git
+	7a5e5dd..57c53ab  dev -> dev
+	因此，多人协作的工作模式通常是这样：
+
+	首先，可以试图用git push origin
+	<branch-name>推送自己的修改；
+
+	如果推送失败，则因为远程分支比你的本地更新，需要先用git
+	pull试图合并；
+
+	如果合并有冲突，则解决冲突，并在本地提交；
+
+	没有冲突或者解决掉冲突后，再用git push origin
+	<branch-name>推送就能成功！
+
+	如果git pull提示no tracking
+	information，则说明本地分支和远程分支的链接关系没有创建，用命令git
+	branch --set-upstream-to <branch-name>
+	origin/<branch-name>。
+
+	这就是多人协作的工作模式，一旦熟悉了，就非常简单。
+
+********git tag
+命令git tag <tagname>用于新建一个标签，默认为HEAD，也可以指定一个commit id；
+
+命令git tag -a <tagname> -m "blablabla..."可以指定标签信息；
+
+命令git tag可以查看所有标签。""
+
+git tag -a v0.1 -m "version 0.1 released" 1094adb""
+
+git tag v1.0
+可以用命令git tag查看所有标签：
+
+$ git tag
+v1.0
+默认标签是打在最新提交的commit上的。有时候，如果忘了打标签，比如，现在已经是周五了，但应该在周一打的标签没有打，怎么办？
+
+方法是找到历史提交的commit id，然后打上就可以了：
+
+$ git log --pretty=oneline --abbrev-commit
+12a631b (HEAD -> master, tag: v1.0, origin/master) merged bug fix 101
+4c805e2 fix bug 101
+e1e9c68 merge with no-ff
+f52c633 add merge
+cf810e4 conflict fixed
+5dc6824 & simple
+14096d0 AND simple
+b17d20e branch test
+d46f35e remove test.txt
+b84166e add test.txt
+519219b git tracks changes
+e43a48b understand how stage works
+1094adb append GPL
+e475afc add distributed
+eaadf4e wrote a readme file
+比方说要对add merge这次提交打标签，它对应的commit id是f52c633，敲入命令：
+
+$ git tag v0.9 f52c633
+再用命令git tag查看标签：
+
+$ git tag
+v0.9
+v1.0
+注意，标签不是按时间顺序列出，而是按字母排序的。可以用git show
+<tagname>查看标签信息：
+
+$ git show v0.9
+commit f52c63349bc3c1593499807e5c8e972b82c8f286 (tag: v0.9)
+Author: Michael Liao <askxuefeng@gmail.com>
+Date:   Fri May 18 21:56:54 2018 +0800
+
+    add merge
+
+		diff --git a/readme.txt b/readme.txt
+		...
+		可以看到，v0.9确实打在add merge这次提交上。
+
+		还可以创建带有说明的标签，用-a指定标签名，-m指定说明文字：
+
+$ git tag -a v0.1 -m "version 0.1 released" 1094adb
+用命令git show <tagname>可以看到说明文字：
+		
+$ git show v0.1
+		tag v0.1
+		Tagger: Michael Liao <askxuefeng@gmail.com>
+		Date:   Fri May 18 22:48:43 2018 +0800
+		
+		version 0.1 released
+		
+		commit 1094adb7b9b3807259d8cb349e7df1d4d6477073 (tag: v0.1)
+		Author: Michael Liao <askxuefeng@gmail.com>
+		Date:   Fri May 18 21:06:15 2018 +0800
+		
+		    append GPL
+				
+				diff --git a/readme.txt b/readme.txt
+
+如果标签打错了，也可以删除：
+
+$ git tag -d v0.1
+Deleted tag 'v0.1' (was f15b0dd)
+因为创建的标签都只存储在本地，不会自动推送到远程。所以，打错的标签可以在本地安全删除。
+
+如果要推送某个标签到远程，使用命令git push origin <tagname>：
+
+$ git push origin v1.0
+Total 0 (delta 0), reused 0 (delta 0)
+To github.com:michaelliao/learngit.git
+ * [new tag]         v1.0 -> v1.0
+ 或者，一次性推送全部尚未推送到远程的本地标签：
+ 
+$ git push origin --tags
+Total 0 (delta 0), reused 0 (delta 0)
+	To github.com:michaelliao/learngit.git
+	* [new tag]         v0.9 -> v0.9
+	如果标签已经推送到远程，要删除远程标签就麻烦一点，先从本地删除：
+	
+$ git tag -d v0.9
+Deleted tag 'v0.9' (was f52c633)
+然后，从远程删除。删除命令也是push，但是格式如下：
+	
+$ git push origin :refs/tags/v0.9
+To github.com:michaelliao/learngit.git
+- [deleted]         v0.9
+要看看是否真的从远程库删除了标签，可以登陆GitHub查看
+
+命令git push origin <tagname>可以推送一个本地标签；
+
+命令git push origin --tags可以推送全部未推送过的本地标签；
+
+命令git tag -d <tagname>可以删除一个本地标签；
+
+命令git push origin :refs/tags/<tagname>可以删除一个远程标签。
+
+***************git多个库同步
+git remote rm origin
+然后，先关联GitHub的远程库：
+
+git remote add github git@github.com:michaelliao/learngit.git
+注意，远程库的名称叫github，不叫origin了。
+
+接着，再关联码云的远程库：
+
+git remote add gitee git@gitee.com:liaoxuefeng/learngit.git
+同样注意，远程库的名称叫gitee，不叫origin。
+
+现在，我们用git remote -v查看远程库信息，可以看到两个远程库：
+
+git remote -v
+gitee    git@gitee.com:liaoxuefeng/learngit.git (fetch)
+gitee    git@gitee.com:liaoxuefeng/learngit.git (push)
+github    git@github.com:michaelliao/learngit.git (fetch)
+github    git@github.com:michaelliao/learngit.git (push)
+如果要推送到GitHub，使用命令：
+
+git push github master
+如果要推送到码云，使用命令：
+
+git push gitee master
+这样一来，我们的本地库就可以同时与多个远程库互相同步：
+
+********git配置别名
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+
+***********git 颜色
+自定义Git
+在安装Git一节中，我们已经配置了user.name和user.email，实际上，Git还有很多可配置项。
+
+比如，让Git显示颜色，会让命令输出看起来更醒目：
+
+$ git config --global color.ui true

@@ -1,2 +1,2 @@
 # git-use
-git的使用命令
+git的常用命令
