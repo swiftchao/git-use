@@ -1,0 +1,73 @@
+1 检查SSH公钥
+cd ~/.ssh
+
+2 生成SSH公钥
+ssh-keygen -t rsa -C "your_email@youremail.com" 
+Generating public/private rsa key pair.
+
+Enter file in which to save the key (/home/you/.ssh/id_rsa):
+默认回车
+
+Enter passphrase (empty for no passphrase):
+
+Enter same passphrase again: 
+可以输入你在github上设置的密码，但每次git操作都必须输入密码，如果直接回车就不用了，生成公私钥成功：
+
+Your identification has been saved in /home/you/.ssh/id_rsa. 
+Your public key has been saved in /home/you/.ssh/id_rsa.pub.
+The key fingerprint is: 
+01:0f:f4:3b:ca:85:d6:17:a1:7d:f0:68:9d:f0:a2:db your_email@youremail.com
+ 
+3 添加SSH公钥到github
+
+打开github，找到账户里面添加SSH，把id_rsa.pub内容复制到key里面。
+
+4 测试是否生效
+ 
+使用下面的命令测试
+ssh -T git@github.com当看到这些内容放入时候，直接yes
+The authenticity of host 'github.com (207.97.227.239)' can't be established. 
+RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48. 
+ 
+Are you sure you want to continue connecting (yes/no)?看到这个内容放入时候，说明就成功了。
+Hi username! 
+You've successfully authenticated, but GitHub does not provide shell access.
+四、上传本地项目到github
+mkdir demo
+cd demo
+echo "# demo" >> README.md
+git init //把这个目录变成Git可以管理的仓库
+git add README.md //文件添加到仓库
+git add . //不但可以跟单一文件，还可以跟通配符，更可以跟目录。一个点就把当前目录下所有未追踪的文件全部add了（空目录不会被添加）
+git status //查看当前工作区的状态（需提交的变更）
+git commit -m "first commit" //把文件提交到仓库
+git remote add origin git@github.com:swiftchao/demo.git //关联远程仓库
+git push -u origin master //将本地主分支推到远程(如无远程主分支则创建，用于初始化远程仓库)
+git push origin master //将本地主分支推到远程主分支    
+下载操作：
+git pull origin master //把远程库更改拉到本地仓库
+git clone git@github.com:swiftchao/demo.git //克隆远程仓库到本地
+git clone https://github.com/swiftchao/demo.git //克隆远程仓库到本地
+git clone https://github.com/swiftchao/demo //克隆远程仓库到本地
+
+生成key	
+ssh-keygen -t rsa -C "chaofeibest@163.com" 
+cat ~/.ssh/id_rsa.pub
+添加key到github上
+一、创建github repository(仓库)
+
+仓库地址使用SSH，如果用https地址每次push/pull都要输入github账号密码。二、安装客户端
+windows: https://desktop.github.com/
+linux(centos): yum install git（升级到git新版本）
+绑定用户：
+git config --global user.name "xxx"
+git config --global user.email "xxx@gmail.com"
+ps：git config  –global 参数，有了这个参数，表示你这台机器上所有的Git仓库都会使用这个配置，当然你也可以对某个仓库指定的不同的用户名和邮箱。
+
+查看git配置：
+git config --list
+
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+
+git clone git@gitee.com:chaofeibest/gittee-demo.git
+git clone git@github.com:swiftchao/git-use.git
