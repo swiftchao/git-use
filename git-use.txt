@@ -74,6 +74,32 @@ git clone git@github.com:swiftchao/demo.git //克隆远程仓库到本地
 git clone https://github.com/swiftchao/demo.git //克隆远程仓库到本地
 git clone https://github.com/swiftchao/demo //克隆远程仓库到本地
 
+**********git 实践使用
+Git 全局设置:
+
+git config --global user.name "chaofei"
+git config --global user.email "chaofeibest@163.com"
+创建 git 仓库:
+
+mkdir git-use
+cd git-use
+git init
+touch README.md
+git add README.md
+git commit -m "first commit"
+git remote add origin https://gitee.com/chaofeibest/git-use.git
+git push -u origin master
+已有项目?
+
+cd existing_git_repo
+git remote add origin https://gitee.com/chaofeibest/git-use.git
+git push -u origin master
+
+*********************git remote add
+------------------------------------------------------------
+git remote add github git@github.com:swiftchao/git-use.git
+git remote add gitee git@gitee.com:chaofeibest/git-use.git
+
 
 **********git回退
 首先，Git必须知道当前版本是哪个版本，在Git中，用HEAD表示当前版本，也就是最新的提交1094adb...（注意我的提交ID和你的肯定不一样），上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。
@@ -555,6 +581,11 @@ gitee    git@gitee.com:liaoxuefeng/learngit.git (fetch)
 gitee    git@gitee.com:liaoxuefeng/learngit.git (push)
 github    git@github.com:michaelliao/learngit.git (fetch)
 github    git@github.com:michaelliao/learngit.git (push)
+
+------------------------------------------------------------
+git remote add github git@github.com:swiftchao/git-use.git
+git remote add gitee git@gitee.com:chaofeibest/git-use.git
+------------------------------------------------------------
 如果要推送到GitHub，使用命令：
 
 git push github master
