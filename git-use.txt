@@ -56,6 +56,13 @@ git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Crese
 git clone git@gitee.com:chaofeibest/gittee-demo.git
 git clone git@github.com:swiftchao/git-use.git
 
+配置自动生成changeId
+github
+gitdir=$(git rev-parse --git-dir); scp -p -P 29418 swiftchao@github.com:hooks/commit-msg ${gitdir}/hooks/commit-msg
+Starlingx的
+gitdir=$(git rev-parse --git-dir); scp -p -P 29418 feichao@review.opendev.org:hooks/commit-msg ${gitdir}/hooks/
+git commit --amend
+
 ***************上传本地项目到github
 mkdir demo
 cd demo
