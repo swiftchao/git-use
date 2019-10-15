@@ -1,0 +1,38 @@
+hosts
+127.0.0.1 localhost
+127.0.0.1 fitmgr-eureka
+127.0.0.1 fitmgr-gateway
+127.0.0.1 fitmgr-redis
+127.0.0.1 fitmgr-mysql
+127.0.0.1 fitmgr-zookeeper
+127.0.0.1 fitmgr-zipkin
+
+
+
+
+http://10.127.9.31:8090
+http://10.127.9.31:20080/users/sign_in
+
+ssh://git@10.127.9.31:20022/fitmgr/fitmgr-resourcecenter.git
+
+http://10.127.9.31:8090
+pip install git-review
+mkdir -p /d/work/code/git
+cd /d/work/code/git/
+git clone ssh://git@10.127.9.31:20022/fitmgr/fitmgr.git
+cd /d/work/code/git/fitmgr/fitmgr-visual/
+git clone ssh://git@10.127.9.31:20022/fitmgr/fitmgr-resourcecenter.git
+git remote remove gerrit
+git remote add gerrit http://fchao:Bktg+sBAO8xx8sV38evnudTrO47X8prC02bePfK0pw@10.127.9.31:8090/fitmgr/fitmgr-resourcecenter.git
+git config --list
+git config user.name "chaofei"
+git config user.email "fchao@fiberhome.com"
+git config --list
+git remote -v
+
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+
+gitdir=$(git rev-parse --git-dir)
+chmod 771 ${gitdir}/hooks/commit-msg
+scp -p -P 29418 fchao@10.127.9.31:hooks/commit-msg ${gitdir}/hooks/
+git commit --amend --no-edit
