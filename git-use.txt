@@ -676,3 +676,13 @@ warning: You appear to have cloned an empty repository.
 要方便管理公钥，用Gitosis；
 
 要像SVN那样变态地控制权限，用Gitolite
+
+Git HEAD detached from XXX 解决
+git解决游离状态
+git branch tem
+git checkout master
+git merge tem
+git status
+git pull origin master
+git status
+git branch -d tem
