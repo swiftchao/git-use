@@ -4,10 +4,12 @@ package com.fitmgr.resourcecenter.api.v1;
 import com.fitmgr.resourcecenter.common.utils.RB;
 import com.fitmgr.resourcecenter.db.entity.FirewallRuleServices;
 import com.fitmgr.resourcecenter.service.network.firewall.FirewallRuleServiceManager;
+import com.fitmgr.resourcecenter.service.network.firewall.FirewallRuleServiceVerifyBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 /**
  * <p>
@@ -34,8 +36,8 @@ public class FirewallRuleServicesController {
     }
 
     @PutMapping(value = {"/params_verify"})
-    public RB verifyFirewallRuleServicesParams(){
-        Boolean response = firewallRuleServiceManager.verifyFirewallRuleServicesParams();
+    public RB verifyFirewallRuleServicesParams(FirewallRuleServiceVerifyBody firewallRuleServiceVerifyBody){
+        Map<String, String> response = firewallRuleServiceManager.verifyFirewallRuleServicesParams(firewallRuleServiceVerifyBody);
         return null;
     }
 
