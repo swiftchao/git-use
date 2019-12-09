@@ -686,3 +686,40 @@ git status
 git pull origin master
 git status
 git branch -d tem
+
+# patch
+1 使用git format-patch生成所需要的patch:
+当前分支所有超前master的提交：
+git format-patch -M master
+某次提交以后的所有patch:
+git format-patch 4e16 --4e16指的是commit名
+从根到指定提交的所有patch:
+git format-patch --root 4e16
+某两次提交之间的所有patch:
+git format-patch 365a..4e16 --365a和4e16分别对应两次提交的名称
+某次提交（含）之前的几次提交：
+git format-patch –n 07fe --n指patch数，07fe对应提交的名称
+故，单次提交即为：
+git format-patch -1 07fe
+git format-patch生成的补丁文件默认从1开始顺序编号，并使用对应提交信息中的第一行作为文件名。如果使用了-- numbered-files选项，则文件名只有编号，不包含提交信息；如果指定了--stdout选项，可指定输出位置，如当所有patch输出到一个文件；可指定-o <dir>指定patch的存放目录；
+
+
+2应用patch：
+先检查patch文件：git apply --stat newpatch.patch
+检查能否应用成功：git apply --check newpatch.patch
+打补丁：git am --signoff < newpatch.patch
+
+# format-patch生成patch文件
+22bcd3f0 开始的commitid
+075833ff 是结束的commitid
+git format-patch 22bcd3f0..075833ff
+mkdir patches
+mv *.patch patches/
+
+# 检查patch文件的格式
+git apply --stat /e/work/patch/20191209/patches/0001-nsp-router-changes.patch
+# 检查patch文件是否能应用成功
+git apply --check /e/work/patch/20191209/patches/0001-nsp-router-changes.patch
+打补丁
+git am --signoff < /e/work/patch/20191209/patches/0001-nsp-router-changes.patch
+
