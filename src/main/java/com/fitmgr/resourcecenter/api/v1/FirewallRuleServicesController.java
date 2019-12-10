@@ -31,7 +31,7 @@ public class FirewallRuleServicesController {
                                          @RequestHeader(value = "User-Id", required = false) String user_id,
                                          @RequestHeader(value = "Scope", required = false) String scope,
                                          @Valid @RequestBody FirewallRuleServices firewallRuleServicesRequest) {
-        FirewallRuleServices response = firewallRuleServiceManager.createFirewallRuleServices();
+        FirewallRuleServices response = firewallRuleServiceManager.createFirewallRuleServices(firewallRuleServicesRequest);
         return new RB <> (response);
     }
 
