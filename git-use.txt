@@ -723,3 +723,7 @@ git apply --check /e/work/patch/20191209/patches/0001-nsp-router-changes.patch
 打补丁
 git am --signoff < /e/work/patch/20191209/patches/0001-nsp-router-changes.patch
 
+
+git format-patch 075833ff..8ce644b3
+mkdir patches-1209-2
+mv *.patch patches-1209-2
