@@ -12,7 +12,7 @@ function create_dir() {
 function git_apply() {
   create_dir "${APPLIED_DIR}"
   create_dir "${APPLY_ERROR_DIR}"
-  for patch_file in `ls $PATCH_DIR/*.patch`; do
+  for patch_file in `ls $PATCH_DIR/*.patch | sort`; do
     echo "$patch_file"
     git apply --check $patch_file
     RESULT=$?
