@@ -40,6 +40,8 @@ Examples:
 ${this} -p HEAD^              # Last Modify patch
 ${this} -p HEAD^^^^           # Last 4 Modify patches
 ${this} -p a283e10..74fac6c   # Modify patches between a283e10 and 74fac6c
+${this} -p a283e10..HEAD      # Modify patches between a283e10 and current HEAD
+${this} -p a283e10..HEAD^     # Modify patches between a283e10 and current HEAD^
 ${this} -p --root             # All patches
  " 
 }
