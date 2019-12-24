@@ -35,7 +35,7 @@ function get_current_user() {
 }
 
 function usage() {
- echo "Usage: ${this} [-r|--record] [-p|playback] [-u|--user] [-d|-disk] [-j|-jdk] [-a|-all]
+ echo "Usage: ${this} [-p|--patch]
 Examples:
 ${this} -p HEAD^              # Last Modify patch
 ${this} -p HEAD^^^^           # Last 4 Modify patches
@@ -56,6 +56,7 @@ function check_args() {
     SOFT_PATCH="true"
 	shift
 	if [ -z "${1}" ]; then
+	  usage
 	  exit 1
 	fi
 	while [ $# -gt 0 ]; do 
@@ -72,7 +73,6 @@ function check_args() {
       usage
       exit 1
   esac
-  
 }
 
 function generate_default_patch_name() {
