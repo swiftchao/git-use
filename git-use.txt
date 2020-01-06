@@ -727,3 +727,15 @@ git am --signoff < /e/work/patch/20191209/patches/0001-nsp-router-changes.patch
 git format-patch 075833ff..8ce644b3
 mkdir patches-1209-2
 mv *.patch patches-1209-2
+
+#cherry-pick
+git branch -av
+git branch -vv
+git branch hangxin_1230 remotes/gerrit/hangxin_1230
+git checkout master
+git log --oneline
+git checkout hangxin_1230
+git cherry-pick d04bcec4
+git add .
+git commit
+git review hangxin_1230
