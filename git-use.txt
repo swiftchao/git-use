@@ -739,3 +739,116 @@ git cherry-pick d04bcec4
 git add .
 git commit
 git review hangxin_1230
+
+#
+git branch -av
+更新分支的代码
+git checkout -b hangxin_1230 remotes/gerrit/hangxin_1230
+git pull
+git checkout master
+git pull origin master
+git log --oneline
+git checkout hangxin_1230
+git cherry-pick d04bcec4
+git status
+git diff .
+git add sql
+git status
+git commit
+git review hangxin_1230
+
+#报错解决
+ ! [rejected]        master -> master (fetch first)
+error: failed to push some refs to 'git@gitee.com:chaofeibest/git-use.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: (e.g., 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+git remote -v
+git remote add gitee git@gitee.com:chaofeibest/git-use.git
+git remote -v
+#报错解决pull下代码就可以了
+git pull gitee master
+git push gitee master
+
+
+#gerrit不能对一个已经merge/abandon的change进行再次提交操作,要再次提交需要修改changeId
+获取已经提交的commitId
+git log --oneline
+git reset 4bf54595
+git status
+#修改已有的changeId
+git commit --amend
+#查看changeId已经修改
+git log
+#再重新提交
+git review hangxin_1230
+
+
+#统计提交
+#使用 git 统计代码的数量
+#统计某一名开发者有效代码总行数：
+git log --author="chaofei" --numstat --pretty=tformat: | gawk '{ add += $1; subs += $2; loc += $1 + $2} END {printf "added lines: %s removed lines : %s total lines : %s\n", add, subs, loc}'
+#统计一段时间内代码变化
+git log --author="chaofei" --since ==2016-01-01 --until=2016-08-08 --numstat --pretty=tformat: | gawk '{ add += $1; subs += $2; loc += $1 + $2} END {printf "added lines: %s removed lines : %s total lines : %s\n", add, subs, loc}'
+git log --author chaofei --stat | perl -ne 'END {print $c} $c  += $1 if /(\d+) insertions/'
+git log --author chaofei --stat | perl -ne 'END {print $c} $c  += $1 if /(\d+) deletions/'
+git log --author chaofei --stat | perl -ne 'END {print $c} $c  += $1 if /(\d+) file changed/'
+#统一某人的总的commit数量
+git log --author=chaofei --oneline | wc -l
+提交排名top 10
+％aN代表只显示commit的author name。
+也可以使用%ae，使用author email，防止出现重名的情况。
+然后按照名字或者email排序，之后uniq的时候数count，之后按照第一列的值按照number的方式排序，最后取前10条记录
+git log --pretty=%ae
+git log --pretty=%aN | sort| uniq -c
+   58 chaofei
+    3 cicd
+   33 ckji
+sort -r从大大小排列
+git log --pretty=%aN | sort| uniq -c | sort -k1 -n -r | head -n 10
+#统计有多少个代码贡献者
+git log --pretty=%aN | sort -u | wc -l
+   
+sort命令支持很多参数，常用参数如下：
+
+短参数	长参数	说明
+-n	– number-sort	按字符串数值排序，与-g区别为不转为浮点数
+-g	–general-number-sort	按通用数值排序，支持科学计数法
+-f	–ignore-case	忽略大小写，默认大小写字母不同
+-k	–key=POS1[,POS2]	排序从POS1开始，若指定POS2，则POS2结束，否则以pos1排序
+-t	–field-separator=SEP	指定列的分割符
+-r	–reverse	降序排序，默认为升序
+-h	–human-numeric-sort	使用易读性数字(例如： 2K 1G)
+-u	–unique	去除重复的行
+-o	–output=FILE	将输出写入文件
+
+用法：uniq [选项]... [文件]
+从输入文件或者标准输入中筛选相邻的匹配行并写入到输出文件或标准输出。
+ 
+不附加任何选项时匹配行将在首次出现处被合并。
+ 
+长选项必须使用的参数对于短选项时也是必需使用的。
+  -c, --count           在每行前加上表示相应行目出现次数的前缀编号
+  -d, --repeated        只输出重复的行
+  -D, --all-repeated[=delimit-method    显示所有重复的行
+                        delimit-method={none(default),prepend,separate}
+                        以空行为界限
+  -f, --skip-fields=N   比较时跳过前N 列
+  -i, --ignore-case     在比较的时候不区分大小写
+  -s, --skip-chars=N    比较时跳过前N 个字符
+  -u, --unique          只显示唯一的行
+  -z, --zero-terminated 使用'\0'作为行结束符，而不是新换行
+  -w, --check-chars=N   对每行第N 个字符以后的内容不作对照
+      --help            显示此帮助信息并退出
+      --version         显示版本信息并退出
+ 
+若域中为先空字符(通常包括空格以及制表符)，然后非空字符，域中字符前的空字符将被跳过。
+ 
+提示：uniq 不会检查重复的行，除非它们是相邻的行。
+如果您想先对输入排序，使用没有uniq 的"sort -u"。
+#系统进程内存占用排序
+ps aux | sort -gr -k 4 | head -n 5
+sort -t ':' -k 3 -nr passwd
