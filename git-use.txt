@@ -852,3 +852,115 @@ sort命令支持很多参数，常用参数如下：
 #系统进程内存占用排序
 ps aux | sort -gr -k 4 | head -n 5
 sort -t ':' -k 3 -nr passwd
+
+git stash 用法总结和注意点
+常用git stash命令：
+
+（1）git stash save "save message"  : 执行存储时，添加备注，方便查找，只有git stash 也要可以的，但查找时不方便识别。
+
+（2）git stash list  ：查看stash了哪些存储
+
+（3）git stash show ：显示做了哪些改动，默认show第一个存储,如果要显示其他存贮，后面加stash@{$num}，比如第二个 git stash show stash@{1}
+
+（4）git stash show -p : 显示第一个存储的改动，如果想显示其他存存储，命令：git stash show  stash@{$num}  -p ，比如第二个：git stash show  stash@{1}  -p
+
+（5）git stash apply :应用某个存储,但不会把存储从存储列表中删除，默认使用第一个存储,即stash@{0}，如果要使用其他个，git stash apply stash@{$num} ， 比如第二个：git stash apply stash@{1} 
+
+（6）git stash pop ：命令恢复之前缓存的工作目录，将缓存堆栈中的对应stash删除，并将对应修改应用到当前的工作目录下,默认为第一个stash,即stash@{0}，如果要应用并删除其他stash，命令：git stash pop stash@{$num} ，比如应用并删除第二个：git stash pop stash@{1}
+
+（7）git stash drop stash@{$num} ：丢弃stash@{$num}存储，从列表中删除这个存储
+
+（8）git stash clear ：删除所有缓存的stash
+
+
+# 修改已提交的commit的msg
+1. 使用git log命令查看历史记录
+git log
+2.使用git rebase -i HEAD~6确定要修改哪些commit
+其中，HEAD~6表示最近的6个，后面的6可以改成其他数字。
+git rebase -i HEAD~6
+假设我们需要修改第2条和第4条commit的message，
+则需要将它们的命令（command），由pick改为edit，
+其它地方保持不变（此时还不用修改message）。
+
+修改完成之后，保存修改。
+
+
+
+1 edit 4c4c5c71 add vpc subent lb vip 2 external network domain ALTER TABLE prefixes ADD `network_type` VARCHAR(255) DEFAULT NULL AFTER `end_ip`; ALTER TABLE ipam_pools ADD `network_type` VARCHAR(255) DEFAULT     NULL AFTER `prefix_id`; ALTER TABLE allocation_pool ADD `network_type` VARCHAR(255) DEFAULT NULL AFTER `end_ip`; ALTER TABLE subnet ADD `network_type` VARCHAR(255) DEFAULT NULL AFTER `alias`; ALTER TABLE i    p_pools ADD `network_type` VARCHAR(255) DEFAULT NULL AFTER `gateway`; ALTER TABLE sp_ip_pool_allocation ADD `network_type` VARCHAR(255) DEFAULT NULL AFTER `device_type`; ALTER TABLE loadbalancer ADD `networ    k_type` VARCHAR(255) DEFAULT NULL AFTER `recycled`;
+  2 pick 0f0ff2f4 instance ipAddress optimize
+  3 edit eca677d7 add http code and exception
+  4 pick 691bd190 add vpn service in openstack4j
+  5 pick 15f388fb modify a BUG
+  6 pick 54ca0f4b router external gateway
+  7
+  8 # Rebase cc04af5e..54ca0f4b onto cc04af5e (6 commands)
+  9 #
+ 10 # Commands:
+ 11 # p, pick = use commit
+ 12 # r, reword = use commit, but edit the commit message
+ 13 # e, edit = use commit, but stop for amending
+ 14 # s, squash = use commit, but meld into previous commit
+ 15 # f, fixup = like "squash", but discard this commit's log message
+ 16 # x, exec = run command (the rest of the line) using shell
+ 17 # d, drop = remove commit
+ 18 #
+ 19 # These lines can be re-ordered; they are executed from top to bottom.
+ 20 #
+ 21 # If you remove a line here THAT COMMIT WILL BE LOST.
+ 22 #
+ 23 # However, if you remove everything, the rebase will be aborted.
+ 24 #
+ 25 # Note that empty commits are commented out
+ 
+3. 轮流使用git commit --amend和git rebase --continue修改每个edit的commit
+
+ business-chain
+  2 add vpc subent lb vip 2 external network domain
+  3 ALTER TABLE prefixes ADD `network_type` VARCHAR(255) DEFAULT NULL AFTER `end_ip`;
+  4 ALTER TABLE ipam_pools ADD `network_type` VARCHAR(255) DEFAULT NULL AFTER `prefix_id`;
+  5 ALTER TABLE allocation_pool ADD `network_type` VARCHAR(255) DEFAULT NULL AFTER `end_ip`;
+  6 ALTER TABLE subnet ADD `network_type` VARCHAR(255) DEFAULT NULL AFTER `alias`;
+  7 ALTER TABLE ip_pools ADD `network_type` VARCHAR(255) DEFAULT NULL AFTER `gateway`;
+  8 ALTER TABLE sp_ip_pool_allocation ADD `network_type` VARCHAR(255) DEFAULT NULL AFTER `device_type`;
+  9 ALTER TABLE loadbalancer ADD `network_type` VARCHAR(255) DEFAULT NULL AFTER `recycled`;
+ 10
+ 11 Change-Id: Ic9a0176a13ea1a0a4d0694b8e55d30a601a7269d
+ 12
+
+chaofei@DESKTOP-T6A6N35 MINGW64 /e/work/fiberhome/code/git/fitmgr/fitmgr-visual/fitmgr-resourcecenter (vpc-2-external-network-domain|REBASE-i 1/6)
+$ git rebase --continue
+
+
+chaofei@DESKTOP-T6A6N35 MINGW64 /e/work/fiberhome/code/git/fitmgr/fitmgr-visual/fitmgr-resourcecenter (vpc-2-external-network-domain|REBASE-i 3/6)
+$ git commit --amend
+[detached HEAD 735bb4bf] business-chain add http code and exception
+ Date: Tue May 19 20:05:00 2020 +0800
+ 3 files changed, 75 insertions(+)
+
+$ git rebase --continue
+Successfully rebased and updated refs/heads/vpc-2-external-network-domain.
+
+chaofei@DESKTOP-T6A6N35 MINGW64 /e/work/fiberhome/code/git/fitmgr/fitmgr-visual/fitmgr-resourcecenter (vpc-2-external-network-domain)
+
+chaofei@DESKTOP-T6A6N35 MINGW64 /e/work/fiberhome/code/git/fitmgr/fitmgr-visual/fitmgr-resourcecenter (vpc-2-external-network-domain)
+$ git checkout master
+Switched to branch 'master'
+Your branch is up-to-date with 'origin/master'.
+
+chaofei@DESKTOP-T6A6N35 MINGW64 /e/work/fiberhome/code/git/fitmgr/fitmgr-visual/fitmgr-resourcecenter (master)
+$ git pull
+Already up-to-date.
+
+chaofei@DESKTOP-T6A6N35 MINGW64 /e/work/fiberhome/code/git/fitmgr/fitmgr-visual/fitmgr-resourcecenter (master)
+$ git checkout vpc-2-external-network-domain
+Switched to branch 'vpc-2-external-network-domain'
+
+chaofei@DESKTOP-T6A6N35 MINGW64 /e/work/fiberhome/code/git/fitmgr/fitmgr-visual/fitmgr-resourcecenter (vpc-2-external-network-domain)
+$ git rebase master
+First, rewinding head to replay your work on top of it...
+
+
+
+
+
