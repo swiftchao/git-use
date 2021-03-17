@@ -744,6 +744,7 @@ git review hangxin_1230
 git branch -av
 更新分支的代码
 git checkout -b hangxin_1230 remotes/gerrit/hangxin_1230
+git checkout -b hangxin_1230 remotes/origin/hangxin_1230
 git pull
 git checkout master
 git pull origin master
@@ -964,3 +965,9 @@ First, rewinding head to replay your work on top of it...
 
 
 
+
+git remote remove gerrit
+git remote add gerrit http://fchao:1+Nh6xcwH16K9iumIntWWsEpC7DzOPmdq8pJ+VuC4Q@10.121.5.36:8082/fitcloud/neutron-vpnaas.git
+
+Closes-Bug: 10275
+fix bug of delete ipsec-site-connection vpn-service status still active
